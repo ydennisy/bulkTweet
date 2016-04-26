@@ -1,7 +1,7 @@
 /**
  * Dependencies
  */
-var afinn = require('./data/AFINN.json');
+var afinn = require('./data/afinn.json');
 var http = require('http');
 
 // convert all words in string to tokens for comparsion to AFINN
