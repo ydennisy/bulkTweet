@@ -1,0 +1,17 @@
+{
+  "name": "afinn",
+  "version": "0.0.1",
+  "description": "afinn word sentiment analysis api - batch",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node app.js"
+  },
+  "keywords": [
+    "afinn",
+    "sentiment"
+  ],
+  "author": "Dennis Yurkevich",
+  "license": "ISC",
+  "dependencies": {}
+}
