@@ -97,6 +97,6 @@ http.createServer(function(req, res){
       res.end();
       console.log('[404] ' + req.method + ' to ' + req.url);
   };
-}).listen(3001);
+}).listen(80);
 
-console.log('server running on 3001');
+console.log('server running on 80');
