@@ -22,11 +22,11 @@ var applySentiment = function(id, phrase) {
   }
 
   // Storage objects
-  var tokens    = tokenize(phrase),
-      score     = 0,
-      words     = [],
-      positive  = [],
-      negative  = [];
+  var tokens      = tokenize(phrase),
+      score       = 0,
+      words       = [],
+      positive    = [],
+      negative    = [];
 
   // check each token/word
   var len = tokens.length;
@@ -58,6 +58,7 @@ var applySentiment = function(id, phrase) {
 
 }
 
+// Response array to be sent back to requesting server
 var responseArray = [];
 
 var bulkCheck = function (obj) {
@@ -67,18 +68,14 @@ var bulkCheck = function (obj) {
   console.log(responseArray);
 }
 
-var simpleTestData = {
-  '1' : 'hello I hate that dog',
-  '2' : 'I really love that cat',
-  '3' : 'no feelings at all'
-}
-
+// Create HTTP server
 http.createServer(function(req, res){
-  // our single API route
+
+  // our single API route listening on /bulkTweet
   switch(req.url) {
 
     case '/bulkTweet' :
-
+      // accepting POST requests only
       if (req.method == 'POST') {
         var postData = '';
         req.on('data', function(chunk){
@@ -88,6 +85,7 @@ http.createServer(function(req, res){
           bulkCheck(JSON.parse(postData));
           res.writeHead(200, {'Content-Type': 'application/json'})
           res.end(JSON.stringify(responseArray));
+          console.log('[200] ' + req.method + ' to ' + req.url);
         });
       }
       break;
