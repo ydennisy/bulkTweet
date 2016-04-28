@@ -35,7 +35,7 @@ var getSentiment = function(id, phrase) {
     var tokenRating = afinn[token];
     if (!afinn.hasOwnProperty(token)) continue;
 
-    words.push(obj);
+    words.push(token);
     if (tokenRating > 0) positive.push(token);
     if (tokenRating < 0) negative.push(token);
 
@@ -59,7 +59,7 @@ var getSentiment = function(id, phrase) {
 var calculateSentiments = function (obj) {
   var results = [];
   for (tweet in obj) {
-    result.push(getSentiment(tweet, obj[tweet]));
+    results.push(getSentiment(tweet, obj[tweet]));
   }
   console.log(results);
   return results;
@@ -79,7 +79,7 @@ http.createServer(function(req, res){
           postData += chunk.toString();
         });
         req.on('end', function(){
-          res.writeHead(200, {'Content-Type': 'application/json'})
+          res.writeHead(200, {'Content-Type': 'application/json'});
           res.end(JSON.stringify(calculateSentiments(JSON.parse(postData))));
           console.log('[200] ' + req.method + ' to ' + req.url);
         });
