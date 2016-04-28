@@ -14,11 +14,11 @@ var tokenize = function(input) {
 };
 
 // main function taking phrase as the argument
-var applySentiment = function(id, phrase) {
+var getSentiment = function(id, phrase) {
   // simple check to ensure data is a string
   if (typeof phrase !== 'string') {
     phrase = ''; // set empty string for this phrase
-    console.log('Error: Phrase was not a string!');
+    throw new Error('Error: Phrase was not a string!');
   }
 
   // Storage objects
@@ -31,18 +31,18 @@ var applySentiment = function(id, phrase) {
   // check each token/word
   var len = tokens.length;
   while (len--) {
-    var obj = tokens[len];
-    var item = afinn[obj];
-    if (!afinn.hasOwnProperty(obj)) continue;
+    var token = tokens[len];
+    var tokenRating = afinn[token];
+    if (!afinn.hasOwnProperty(token)) continue;
 
     words.push(obj);
-    if (item > 0) positive.push(obj);
-    if (item < 0) negative.push(obj);
+    if (tokenRating > 0) positive.push(token);
+    if (tokenRating < 0) negative.push(token);
 
-    score += item;
+    score += tokenRating;
   }
 
-  //build the results object
+  // build the results object
   var result = {
     id :          id,
     score :       score,
@@ -53,25 +53,22 @@ var applySentiment = function(id, phrase) {
     negative :    negative
   };
 
-  // append each result object to response array
-  responseArray.push(result);
-
+  return result;
 }
 
-// Response array to be sent back to requesting server
-var responseArray = [];
-
-var bulkCheck = function (obj) {
+var calculateSentiments = function (obj) {
+  var results = [];
   for (tweet in obj) {
-    applySentiment(tweet, obj[tweet]);
+    result.push(getSentiment(tweet, obj[tweet]));
   }
-  console.log(responseArray);
+  console.log(results);
+  return results;
 }
 
 // Create HTTP server
 http.createServer(function(req, res){
 
-  // our single API route listening on /bulkTweet
+  // single API route listening on /bulkTweet
   switch(req.url) {
 
     case '/bulkTweet' :
@@ -82,9 +79,8 @@ http.createServer(function(req, res){
           postData += chunk.toString();
         });
         req.on('end', function(){
-          bulkCheck(JSON.parse(postData));
           res.writeHead(200, {'Content-Type': 'application/json'})
-          res.end(JSON.stringify(responseArray));
+          res.end(JSON.stringify(calculateSentiments(JSON.parse(postData))));
           console.log('[200] ' + req.method + ' to ' + req.url);
         });
       }
